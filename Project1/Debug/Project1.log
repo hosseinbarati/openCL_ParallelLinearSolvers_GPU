@@ -1,0 +1,18 @@
+﻿main.obj : error LNK2019: unresolved external symbol _clGetPlatformIDs@12 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clGetDeviceIDs@24 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clCreateContext@24 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clReleaseContext@4 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clCreateCommandQueue@20 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clReleaseCommandQueue@4 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clCreateBuffer@24 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clReleaseMemObject@4 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clCreateProgramWithSource@20 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clReleaseProgram@4 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clBuildProgram@24 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clCreateKernel@12 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clReleaseKernel@4 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clSetKernelArg@16 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clEnqueueReadBuffer@36 referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _clEnqueueNDRangeKernel@36 referenced in function _main
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\lib\x64\OpenCL.lib : warning LNK4272: library machine type 'x64' conflicts with target machine type 'x86'
+E:\GitHub\ParallelLinearSolver_GPU\Debug\Project1.exe : fatal error LNK1120: 16 unresolved externals

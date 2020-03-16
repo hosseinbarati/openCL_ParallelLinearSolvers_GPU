@@ -1,3 +1,8 @@
+#define __CL_ENABLE_EXCEPTIONS
+
+#include <cstdlib>
+#include <iostream>
+
 
 #ifdef MAC
 #include <OpenCL/cl.hpp>
@@ -11,12 +16,28 @@ cl::Context createContextFromIndex(int pidx, int didx, cl_device_type devtype) {
 	std::vector < cl::Device > devices;
 	std::vector < cl::Device > device;
 	std::vector < cl::Platform > platforms;
-	cl::Platform::get(&platforms);
-	platforms[pidx].getDevices(devtype, &devices);
+	try {
+		cl::Platform::get(&platforms);
+	} catch (cl::Error &e) {
+		std::cout << "Error in function " << e.what() << ": " << e.err() << std::endl;
+	}
+	try {
+		platforms[pidx].getDevices(devtype, &devices);
+	} catch (cl::Error &e) {
+		std::cout << "Error in function " << e.what() << ": " << e.err() << std::endl;
+	}
 	cl_context_properties cps[3] =
 	{ CL_CONTEXT_PLATFORM, (cl_context_properties)(platforms[pidx])(), 0 };
 	device.push_back(devices[didx]);
-	return cl::Context(device, cps, NULL, NULL);
+	cl::Context context;
+	try {
+		context = cl::Context(device, cps, NULL, NULL);
+	}
+	catch (cl::Error &e) {
+		std::cout << "Error in function " << e.what() << ": " << e.err() << std::endl;
+	}
+
+	return context;
 }
 
 cl_int SHOW_PLATFORMS_AND_DEVICES() {
@@ -46,7 +67,7 @@ cl_int SHOW_PLATFORMS_AND_DEVICES() {
 		numOfDevices = cl_int(devices.size());
 		if (devices.size() > 0) {
 			for (j = 0; j < numOfDevices; j++) {
-				std::cout << std::endl << "Platform " << i << " , device " << j << std::endl;
+				std::cout << std::endl << "Platform " << i << " , Device " << j << std::endl;
 				std::cout << "CL_DEVICE_NAME: " << devices[j].getInfo <CL_DEVICE_NAME>() << std::endl;
 				std::cout << "CL_DEVICE_VENDOR: " <<
 					devices[j].getInfo < CL_DEVICE_VENDOR >() << std::endl;
@@ -70,7 +91,13 @@ cl_int SELECT_PLATFORMS_AND_DEVICES(cl_int &pidx, cl_int &didx) {
 
 	std::vector < cl::Platform> platforms;
 	std::vector < cl::Device > devices;
-	cl::Platform::get(&platforms);
+	try {
+		cl::Platform::get(&platforms);
+	}
+	catch (cl::Error &e) {
+		std::cout << "Error in function " << e.what() << ": " << e.err() << std::endl;
+	}
+
 	cl_int maxNumDevices, maxNumPlatforms;
 	cl_uint s;
 	do {
@@ -84,7 +111,12 @@ cl_int SELECT_PLATFORMS_AND_DEVICES(cl_int &pidx, cl_int &didx) {
 			std::cout << "Platform is out of range." << std::endl;
 			s = 1;
 		} else{
-			platforms[pidx].getDevices(CL_DEVICE_TYPE_GPU, &devices);
+			try {
+				platforms[pidx].getDevices(CL_DEVICE_TYPE_GPU, &devices);
+
+			} catch (cl::Error &e) {
+				std::cout << "Error in function " << e.what() << ": " << e.err() << std::endl;
+			}
 			if (didx > int(devices.size()) - 1) {
 				std::cout << "Device is out of range." << std::endl;
 				s = 1;
@@ -93,5 +125,19 @@ cl_int SELECT_PLATFORMS_AND_DEVICES(cl_int &pidx, cl_int &didx) {
 	} while (s);
 	
 
+	return 0;
+}
+
+cl_int ContextDevice(cl::Context & context) {
+	std::vector < cl::Device > devices = context.getInfo<CL_CONTEXT_DEVICES>();
+	if (devices.size() > 0) {
+		for (size_t i = 0; i < devices.size(); i++) {
+			std::cout << "Device " << i << std::endl;
+			std::cout << "CL_DEVICE_NAME: " <<
+				devices[i].getInfo <CL_DEVICE_NAME>() << std::endl;
+			std::cout << "CL_DEVICE_VENDOR: " <<
+				devices[i].getInfo < CL_DEVICE_VENDOR >() << std::endl;
+		}
+	}
 	return 0;
 }

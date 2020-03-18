@@ -1,30 +1,43 @@
-#define __CL_ENABLE_EXCEPTIONS
-//#define __CL_USER_OVERRIDE_ERROR_STRINGS
-
-#include <cstdlib>
-#include <iostream>
-
-
-#ifdef MAC
-#include <OpenCL/cl.hpp>
-#else
-#include <CL/cl.hpp>
-#endif
+#include "mOpenCL.h"
 
 
 
-cl::Context createContextFromIndex(int pidx, int didx, cl_device_type devtype) {
+
+mOpenCL::mOpenCL(cl_device_type devtype)
+{
+	//register cl_int i, j;
+	this->devtype = devtype;
+	SELECT_PLATFORMS_AND_DEVICES(pidx, didx, devtype);
+	
+	context1 = createContextFromIndex(pidx, didx, devtype);
+	ContextDevice(context1);
+
+	try {
+		cl::CommandQueue queue = cl::CommandQueue(context1, context1.getInfo<CL_CONTEXT_DEVICES>()[0], CL_QUEUE_PROFILING_ENABLE);
+	}
+	catch (cl::Error &e) {
+		std::cout << "Error in function " << e.what() << ": " << e.err() << std::endl;
+	}
+
+}
+
+
+mOpenCL::~mOpenCL(){}
+
+cl::Context mOpenCL::createContextFromIndex(int pidx, int didx, cl_device_type devtype) {
 	std::vector < cl::Device > devices;
 	std::vector < cl::Device > device;
 	std::vector < cl::Platform > platforms;
 	try {
 		cl::Platform::get(&platforms);
-	} catch (cl::Error &e) {
+	}
+	catch (cl::Error &e) {
 		std::cout << "Error in function " << e.what() << ": " << e.err() << std::endl;
 	}
 	try {
 		platforms[pidx].getDevices(devtype, &devices);
-	} catch (cl::Error &e) {
+	}
+	catch (cl::Error &e) {
 		std::cout << "Error in function " << e.what() << ": " << e.err() << std::endl;
 	}
 	cl_context_properties cps[3] =
@@ -41,7 +54,7 @@ cl::Context createContextFromIndex(int pidx, int didx, cl_device_type devtype) {
 	return context;
 }
 
-cl_int SHOW_PLATFORMS_AND_DEVICES() {
+cl_int mOpenCL::SHOW_PLATFORMS_AND_DEVICES() {
 	register cl_int i, j;
 	std::vector < cl::Platform> platforms;
 	std::vector < cl::Device > devices;
@@ -88,7 +101,7 @@ cl_int SHOW_PLATFORMS_AND_DEVICES() {
 	return 0;
 }
 
-cl_int SELECT_PLATFORMS_AND_DEVICES(cl_int &pidx, cl_int &didx, cl_device_type devtype) {
+cl_int mOpenCL::SELECT_PLATFORMS_AND_DEVICES(cl_int &pidx, cl_int &didx, cl_device_type devtype) {
 
 	std::vector < cl::Platform> platforms;
 	std::vector < cl::Device > devices;
@@ -111,11 +124,13 @@ cl_int SELECT_PLATFORMS_AND_DEVICES(cl_int &pidx, cl_int &didx, cl_device_type d
 		if (pidx > int(platforms.size()) - 1) {
 			std::cout << "Platform is out of range." << std::endl;
 			s = 1;
-		} else{
+		}
+		else {
 			try {
 				platforms[pidx].getDevices(devtype, &devices);
 
-			} catch (cl::Error &e) {
+			}
+			catch (cl::Error &e) {
 				std::cout << "Error in function " << e.what() << ": " << e.err() << std::endl;
 			}
 			if (didx > int(devices.size()) - 1) {
@@ -124,12 +139,12 @@ cl_int SELECT_PLATFORMS_AND_DEVICES(cl_int &pidx, cl_int &didx, cl_device_type d
 			}
 		}
 	} while (s);
-	
+
 
 	return 0;
 }
 
-cl_int ContextDevice(cl::Context & context) {
+cl_int mOpenCL::ContextDevice(cl::Context & context) {
 	std::vector < cl::Device > devices = context.getInfo<CL_CONTEXT_DEVICES>();
 	if (devices.size() > 0) {
 		for (size_t i = 0; i < devices.size(); i++) {
@@ -142,3 +157,10 @@ cl_int ContextDevice(cl::Context & context) {
 	}
 	return 0;
 }
+
+
+
+
+
+
+

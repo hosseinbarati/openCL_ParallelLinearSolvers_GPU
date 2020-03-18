@@ -132,10 +132,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mOpenCL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kernels.h" />
-    <ClInclude Include="openCL_Host.h" />
+    <ClInclude Include="mOpenCL.h" />
     <ClInclude Include="programs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -18,6 +18,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mOpenCL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kernels.h">
@@ -27,6 +30,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="openCL_Host.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mOpenCL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
